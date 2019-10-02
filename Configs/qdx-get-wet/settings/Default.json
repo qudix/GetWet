@@ -1,0 +1,21 @@
+{
+   "UpdateLoopFreq": 25.0,
+   "UpdateLoopDelay": 0.05,
+   "UpdateLoopRange": 5000.0,
+   "VisualGlossinessMin": 30,
+   "VisualGlossinessMax": 30,
+   "VisualGlossinessHead": 1,
+   "VisualGlossinessBody": 1,
+   "VisualGlossinessHands": 1,
+   "VisualGlossinessFeet": 1,
+   "VisualSpecularMin": 5,
+   "VisualSpecularMax": 5,
+   "VisualSpecularHead": 1,
+   "VisualSpecularBody": 1,
+   "VisualSpecularHands": 1,
+   "VisualSpecularFeet": 1,
+   "ApplyNPC": 0,
+   "ApplyMale": 0,
+   "ApplyFemale": 1,
+   "Actors": []
+}

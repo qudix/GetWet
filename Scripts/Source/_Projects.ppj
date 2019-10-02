@@ -1,0 +1,23 @@
+<?xml version='1.0'?>
+	<!-- http://www.creationkit.com/fallout4/index.php?title=Papyrus_Projects -->
+	<PapyrusProject
+		xmlns="PapyrusProject.xsd"
+		Flags="TESV_Papyrus_Flags.flg"
+		Output="..\"
+		Asm="Discard"
+		Optimize="true"
+		Release="false"
+		Final="false"
+	>
+	<Imports>
+		<!--<Import>.</Import>-->
+		<Import>..\..\..\[SKSE] RaceMenu SE\Scripts\Source</Import>
+		<Import>..\..\..\[Interface] SkyUI\Scripts\Source</Import>
+		<Import>..\..\..\[Core] SexLab Aroused SSE\Scripts\Source</Import>
+		<Import>..\..\..\[Core] SexLab Framework SE\Scripts\Source</Import>
+		<Import>..\..\..\[Core] Game\Scripts\Source</Import>
+	</Imports>
+	<Folders>
+		<Folder>.</Folder>
+	</Folders>
+</PapyrusProject>
