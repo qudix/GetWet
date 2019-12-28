@@ -8,14 +8,17 @@
    "VisualGlossinessBody": 1,
    "VisualGlossinessHands": 1,
    "VisualGlossinessFeet": 1,
+   "VisualGlossinessOther": 1,
    "VisualSpecularMin": 5,
    "VisualSpecularMax": 5,
    "VisualSpecularHead": 1,
    "VisualSpecularBody": 1,
    "VisualSpecularHands": 1,
    "VisualSpecularFeet": 1,
+   "VisualSpecularOther": 1,
    "ApplyNPC": 0,
    "ApplyMale": 0,
    "ApplyFemale": 1,
+   "ApplyBeast": 0,
    "Actors": []
 }

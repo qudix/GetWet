@@ -9,7 +9,6 @@ qdx_gw_QuestController Property Main Auto
 MagicEffect Property EffectWet Auto
 Spell Property SpellWet Auto
 
-Keyword Property ActorTypeNPC Auto
 
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ;                      Body                      
@@ -18,6 +17,7 @@ Keyword Property ActorTypeNPC Auto
 Event OnInit()
     {do other stuff}
 
+    ; if controller isn't running, abort
 	If(Main.IsStopped())
 		Main.Util.PrintDebug("Aborting UpdateLoop Init: Controller is not running.")
 		Return
@@ -25,16 +25,17 @@ Event OnInit()
     
     Main.Util.PrintDebug("Update Loop Enabled")
 
-    self.Apply()
-
+    ; apply effect and register for more
+    self.ActorScan()
     self.RegisterForSingleUpdate(Main.Config.GetFloat(".UpdateLoopFreq"))
+
     Return
 EndEvent
 
 Event OnUpdate()
     {clock on the wall}
 
-    self.Apply()
+    self.ActorScan()
 
     ; is it still going?
     If (self.IsRunning())
@@ -44,34 +45,51 @@ Event OnUpdate()
     Return
 EndEvent
 
-Function Apply()
-
-    Bool ApplyNPC = Main.Config.GetBool(".ApplyNPC")
-    Bool ApplyFemale = Main.Config.GetBool(".ApplyFemale")
-    Bool ApplyMale = Main.Config.GetBool(".ApplyMale")
+Function ActorScan()
+    {apply effect to eligible actors}
 
     ; actors
     Actor[] Whom = MiscUtil.ScanCellNPCs(Main.Player, Main.Config.GetFloat(".UpdateLoopRange"))
 
-    Int Number = Whom.Length
-    While (Number > 0)
-        Number -= 1
+    Int Index = Whom.Length
+    While (Index > 0)
+    Index -= 1
 
-        Actor Who = Whom[Number]
+        Actor Who = Whom[Index]
 
+        ; check if actor actually exists
         If (Who != None)
-            ActorBase Base = Who.GetActorBase()
-            Bool Female = Base.GetSex() As Bool
+            ; update actor
+            self.ActorUpdate(Who)
 
-            If (ApplyNPC || (Who == Main.Player))
-                If ((!Female && ApplyMale) || (Female && ApplyFemale))
-                    Main.Body.UpdateVisual(Who, Female)
-                EndIf
-            EndIf
-    
+            ; delay operations between each actor
             Utility.Wait(Main.Config.GetFloat(".UpdateLoopDelay"))
         EndIf
+         
     EndWhile
+
+    Return
+EndFunction
+
+Function ActorUpdate(Actor Who)
+    ActorBase Base = Who.GetLeveledActorBase()
+
+    Bool Female = Base.GetSex() As Bool
+
+    ; is this actor eligible?
+    If Main.Body.CanUpdate(Who, Female)
+        If !Who.HasMagicEffect(EffectWet)
+            Who.AddSpell(SpellWet, False)
+            ;SpellWet.Cast(self, Who)
+
+            Return
+        EndIf
+    EndIf
+
+    ; send update event
+    Int Ev = ModEvent.Create(Main.Body.KeyEvActorUpdate)
+    ModEvent.PushForm(Ev, Who)
+    ModEvent.Send(Ev)
 
     Return
 EndFunction

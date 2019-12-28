@@ -128,11 +128,11 @@ Bool Function CheckForDeps(Bool Popup)
         Result = False
     EndIf
 
-    If !self.CheckForDeps_PapyrusUtil(Popup)
+    If !self.CheckForDeps_RaceMenu(Popup)
         Result = False
     EndIf
 
-    If !self.CheckForDeps_RaceMenu(Popup)
+    If !self.CheckForDeps_PapyrusUtil(Popup)
         Result = False
     EndIf
 
@@ -167,20 +167,6 @@ Bool Function CheckForDeps_SkyUI(Bool Popup)
     Return True
 EndFunction
 
-Bool Function CheckForDeps_PapyrusUtil(Bool Popup)
-    {is PapyrusUtil available}
-
-    If (PapyrusUtil.GetScriptVersion() < 34)
-        If Popup
-            self.Util.PopupError("Your PapyrusUtil is out of date. It is likely some other mod overwrote the version that came in SexLab.")
-        EndIf
-
-        Return False
-    EndIf
-
-    Return True
-EndFunction
-
 Bool Function CheckForDeps_RaceMenu(Bool Popup)
     {is RaceMenu available}
     Bool Result = True
@@ -202,4 +188,18 @@ Bool Function CheckForDeps_RaceMenu(Bool Popup)
     EndIf
 
     Return Result
+EndFunction
+
+Bool Function CheckForDeps_PapyrusUtil(Bool Popup)
+    {is PapyrusUtil available}
+
+    If (PapyrusUtil.GetScriptVersion() < 34)
+        If Popup
+            self.Util.PopupError("Your PapyrusUtil is out of date. It is likely some other mod overwrote the version that came in SexLab.")
+        EndIf
+
+        Return False
+    EndIf
+
+    Return True
 EndFunction
