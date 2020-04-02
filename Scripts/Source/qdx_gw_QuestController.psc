@@ -4,9 +4,8 @@ ScriptName qdx_gw_QuestController extends Quest
 ;                     Version                      
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+; Report a version number
 Int Function GetVersion() Global
-    {report a version number}
-    
     Return 1
 EndFunction
 
@@ -25,9 +24,8 @@ qdx_gw_QuestBody Property Body Auto
 ; Main
 String Property KeyESP = "qdx-get-wet.esp" AutoReadOnly Hidden
 
+; Static method for grabbing a quick handle to the api
 qdx_gw_QuestController Function Get() Global
-    {static method for grabbing a quick handle to the api}
-    
     Return Game.GetFormFromFile(0x800, "qdx-get-wet.esp") As qdx_gw_QuestController
 EndFunction
 
@@ -35,9 +33,8 @@ EndFunction
 ;                      Main                      
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+; Do stuff
 Event OnInit()
-    {do stuff}
-
     Int Wait = 0
 
     If (self.IsStopped())
@@ -45,14 +42,14 @@ Event OnInit()
         Return
     EndIf
 
-    ; check dependencies
+    ; Check dependencies
     If (!self.CheckForDeps(True))
         self.Reset()
         self.Stop()
         Return
     EndIf
 
-    ; start the config menu
+    ; Start the config menu
     self.ResetConfig()
 
     Wait = 0
@@ -67,7 +64,7 @@ Event OnInit()
 		Return
     EndIf
 
-    ; start the background processor
+    ; Start the background processor
     self.ResetLoop()
 
     Wait = 0
@@ -81,43 +78,31 @@ Event OnInit()
 		self.Util.PrintDebug("Startup Aborted: Loop did not reset.")
 		Return
     EndIf
-
-    Return
 EndEvent
 
+; Reset the config menu library
 Function ResetConfig()
-    {reset the config menu library}
-    
     self.Config.Reset()
     self.Config.Stop()
     self.Config.Start()
-
-    Return
 EndFunction
 
+; Reset the background processor library
 Function ResetLoop()
-    {reset the background processor library}
-    
     self.Loop.Reset()
     self.Loop.Stop()
     self.Loop.Start()
-
-    Return
 EndFunction
 
+; Reset the entire mod
 Function ResetMod()
-    {reset the entire mod}
-    
     self.Reset()
     self.Stop()
     self.Start()
-
-    Return
 EndFunction
 
+; Make sure we have everything
 Bool Function CheckForDeps(Bool Popup)
-    {make sure we have everything}
-
     Bool Result = True
 
     If !self.CheckForDeps_SKSE(Popup)
@@ -139,9 +124,8 @@ Bool Function CheckForDeps(Bool Popup)
     Return Result
 EndFunction
 
+; Is SKSE available
 Bool Function CheckForDeps_SKSE(Bool Popup)
-    {is SKSE available}
-
     If (SKSE.GetScriptVersionRelease() < 56)
         If Popup
             self.Util.PopupError("You need to update your SKSE to 2.0.7 or newer.")
@@ -153,9 +137,8 @@ Bool Function CheckForDeps_SKSE(Bool Popup)
     Return True
 EndFunction
 
+; Is SkyUI available
 Bool Function CheckForDeps_SkyUI(Bool Popup)
-    {is SkyUI available}
-
     If (!Game.IsPluginInstalled("SkyUI_SE.esp"))
         If Popup
             self.Util.PopupError("SkyUI SE 5.2 or newer must be installed.")
@@ -167,8 +150,8 @@ Bool Function CheckForDeps_SkyUI(Bool Popup)
     Return True
 EndFunction
 
+; Is RaceMenu available
 Bool Function CheckForDeps_RaceMenu(Bool Popup)
-    {is RaceMenu available}
     Bool Result = True
 
     If (!Game.IsPluginInstalled("RaceMenu.esp"))
@@ -190,16 +173,15 @@ Bool Function CheckForDeps_RaceMenu(Bool Popup)
     Return Result
 EndFunction
 
+; Is PapyrusUtil available
 Bool Function CheckForDeps_PapyrusUtil(Bool Popup)
-    {is PapyrusUtil available}
-
     If (PapyrusUtil.GetScriptVersion() < 34)
         If Popup
             self.Util.PopupError("Your PapyrusUtil is out of date. It is likely some other mod overwrote the version that came in SexLab.")
-        EndIf
-
+		EndIf
+		
         Return False
-    EndIf
-
+	EndIf
+	
     Return True
 EndFunction

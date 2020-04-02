@@ -12,9 +12,8 @@ qdx_gw_QuestController Property Main Auto
 
 String PageCurrentKey
 
+; The game has "loaded"
 Event OnGameReload()
-    {the game has "loaded"}
-
     parent.OnGameReload()
 
     Main.Config.LoadFiles()
@@ -22,9 +21,8 @@ Event OnGameReload()
     Return
 EndEvent
 
+; Setup pages
 Event OnConfigInit()
-    {setup pages}
-
     self.Pages = new String[5]
 
     ; general
@@ -41,31 +39,23 @@ Event OnConfigInit()
 
     ; info
     self.Pages[4] = "$GW_Menu_Info"
-    
-    Return
 EndEvent
 
+; Menu is opening
 Event OnConfigOpen()
-    {menu is opening}
-
     self.OnConfigInit()
-
-    Return
 EndEvent
 
+; Menu is closing
 Event OnConfigClose()
-    {menu is closing}
-
-    Return
+    ; Nothin' Chief
 EndEvent
 
+; Tab was changed
 Event OnPageReset(String Page)
-    {tab was selected}
-
     self.UnloadCustomContent()
 
     PageCurrentKey = Page
-
     If (Page == "$GW_Menu_General")
         self.ShowPageGeneral()
     ElseIf (Page == "$GW_Menu_Visual")
@@ -77,75 +67,57 @@ Event OnPageReset(String Page)
     ElseIf (Page == "$GW_Menu_Info")
         self.ShowPageInfo()
     EndIf
-
-    Return
 EndEvent
 
+; Option was selected
 Event OnOptionSelect(Int Item)
-    {option was selected}
-
     Bool Value = False
 
     If (Item == ItemVisualGlossinessHead)
         Value = !Main.Config.GetBool(".VisualGlossinessHead")
         Main.Config.SetBool(".VisualGlossinessHead", Value)
-
     ElseIf (Item == ItemVisualGlossinessBody)
         Value = !Main.Config.GetBool(".VisualGlossinessBody")
         Main.Config.SetBool(".VisualGlossinessBody", Value)
-
     ElseIf (Item == ItemVisualGlossinessHands)
         Value = !Main.Config.GetBool(".VisualGlossinessHands")
         Main.Config.SetBool(".VisualGlossinessHands", Value)
-
     ElseIf (Item == ItemVisualGlossinessFeet)
         Value = !Main.Config.GetBool(".VisualGlossinessFeet")
         Main.Config.SetBool(".VisualGlossinessFeet", Value)
-
     ElseIf (Item == ItemVisualGlossinessOther)
         Value = !Main.Config.GetBool(".VisualGlossinessOther")
         Main.Config.SetBool(".VisualGlossinessOther", Value)
-
     ElseIf (Item == ItemVisualSpecularHead)
         Value = !Main.Config.GetBool(".VisualSpecularHead")
         Main.Config.SetBool(".VisualSpecularHead", Value)
-    
     ElseIf (Item == ItemVisualSpecularBody)
         Value = !Main.Config.GetBool(".VisualSpecularBody")
         Main.Config.SetBool(".VisualSpecularBody", Value)
-
     ElseIf (Item == ItemVisualSpecularHands)
         Value = !Main.Config.GetBool(".VisualSpecularHands")
         Main.Config.SetBool(".VisualSpecularHands", Value)
-
     ElseIf (Item == ItemVisualSpecularFeet)
         Value = !Main.Config.GetBool(".VisualSpecularFeet")
         Main.Config.SetBool(".VisualSpecularFeet", Value)
-
     ElseIf (Item == ItemVisualSpecularOther)
         Value = !Main.Config.GetBool(".VisualSpecularOther")
         Main.Config.SetBool(".VisualSpecularOther", Value)
-
     ElseIf (Item == ItemApplyNPC)
         Value = !Main.Config.GetBool(".ApplyNPC")
         Main.Config.SetBool(".ApplyNPC", Value)
-
     ElseIf (Item == ItemApplyMale)
         Value = !Main.Config.GetBool(".ApplyMale")
         Main.Config.SetBool(".ApplyMale", Value)
-
     ElseIf (Item == ItemApplyFemale)
         Value = !Main.Config.GetBool(".ApplyFemale")
         Main.Config.SetBool(".ApplyFemale", Value)
-
     ElseIf (Item == ItemApplyBeast)
         Value = !Main.Config.GetBool(".ApplyBeast")
         Main.Config.SetBool(".ApplyBeast", Value)
-
     ElseIf (Item == ItemDebugActive)
         Value = !Main.Config.DebugMode
         Main.Config.DebugMode = Value
-
     ElseIf (Item == ItemModActive)
         If Main.IsRunning()
             Main.Reset()
@@ -155,16 +127,14 @@ Event OnOptionSelect(Int Item)
             Value = True
             Main.Start()
         EndIf
-
     EndIf
 
     self.SetToggleOptionValue(Item, Value)
     Return
 EndEvent
 
+; Slider was opened
 Event OnOptionSliderOpen(Int Item)
-    {slider was opened}
-
     Float Val = 0.0
     Float Min = 0.0
     Float Max = 0.0
@@ -210,13 +180,10 @@ Event OnOptionSliderOpen(Int Item)
     self.SetSliderDialogStartValue(Val)
     self.SetSliderDialogRange(Min, Max)
     self.SetSliderDialogInterval(Interval)
-
-    Return
 EndEvent
 
+; Slider was accepted
 Event OnOptionSliderAccept(Int Item, Float Val)
-    {slider was accepted}
-
     String Fmt = "{0}"
 
     If (Item == ItemUpdateLoopFreq)
@@ -243,29 +210,22 @@ Event OnOptionSliderAccept(Int Item, Float Val)
     EndIf
 
     self.SetSliderOptionValue(Item, Val, Fmt)
-
-    Return
 EndEvent
 
 Event OnOptionMenuOpen(Int Item)
-
 EndEvent
 
 Event OnOptionMenuAccept(Int Item, Int Selected)
-
 EndEvent
 
 Event OnOptionInputOpen(Int Opt)
-
 EndEvent
 
 Event OnOptionInputAccept(Int Opt, String Txt)
-
 EndEvent
 
+; Mouse is over an option
 Event OnOptionHighlight(Int Item)
-    {mouse is over an option}
-	
 	String Txt = ""
 
 	If (Item == ItemModActive)
@@ -299,7 +259,6 @@ Event OnOptionHighlight(Int Item)
 	EndIf
 
 	self.SetInfoText(Txt)
-	Return
 EndEvent
 
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -312,6 +271,7 @@ Int ItemUpdateLoopFreq
 Int ItemUpdateLoopDelay
 Int ItemUpdateLoopRange
 
+; Show general page
 Function ShowPageGeneral()
     self.SetTitleText("$GW_MenuTitle_General")
 	self.SetCursorFillMode(TOP_TO_BOTTOM)
@@ -330,8 +290,6 @@ Function ShowPageGeneral()
 	self.AddEmptyOption()
     self.AddEmptyOption()
 	self.AddEmptyOption()
-    
-    Return
 EndFunction
 
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -359,6 +317,7 @@ Int ItemApplyMale
 Int ItemApplyFemale
 Int ItemApplyBeast
 
+; Show visual page
 Function ShowPageVisual()
     self.SetTitleText("$GW_MenuTitle_Visual")
 	self.SetCursorFillMode(TOP_TO_BOTTOM)
@@ -392,20 +351,17 @@ Function ShowPageVisual()
     ItemApplyFemale = AddToggleOption("$GW_MenuOpt_TypeFemale", Main.Config.GetBool(".ApplyFemale"))
     ItemApplyBeast = AddToggleOption("$GW_MenuOpt_TypeBeast", Main.Config.GetBool(".ApplyBeast"))
     self.AddEmptyOption()
-
-    Return
 EndFunction
 
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ;                   Page: Actor                      
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+; Show actor page
 Function ShowPageActor()
     self.SetTitleText("$GW_MenuTitle_Actor")
 	self.SetCursorFillMode(TOP_TO_BOTTOM)
     self.SetCursorPosition(0)
-
-    Return
 EndFunction
 
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -414,6 +370,7 @@ EndFunction
 
 Int ItemDebugActive
 
+; Show debug page
 Function ShowPageDebug()
     self.SetTitleText("$GW_MenuTitle_Debug")
 	self.SetCursorFillMode(TOP_TO_BOTTOM)
@@ -423,24 +380,21 @@ Function ShowPageDebug()
     self.AddHeaderOption("$GW_MenuOpt_HeaderDebugStatus")
 	ItemDebugActive = AddToggleOption("$GW_MenuOpt_DebugActive", Main.Config.DebugMode)
 	self.AddEmptyOption()
-
-    Return
 EndFunction
 
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ;                    Page: Info                      
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+; Show info page
 Function ShowPageInfo()
     self.SetTitleText("$GW_MenuTitle_Info")
     self.SetCursorFillMode(TOP_TO_BOTTOM)
     self.SetCursorPosition(0)
 
     self.AddHeaderOption("$GW_MenuOpt_HeaderDependencyCheck")
-    AddToggleOption("$GW_MenuOpt_SKSE", Main.CheckForDeps_SKSE(false), OPTION_FLAG_DISABLED)
-    AddToggleOption("$GW_MenuOpt_SkyUI", Main.CheckForDeps_SkyUI(false), OPTION_FLAG_DISABLED)
-    AddToggleOption("$GW_MenuOpt_RaceMenu", Main.CheckForDeps_RaceMenu(false), OPTION_FLAG_DISABLED)
-    AddToggleOption("$GW_MenuOpt_PapyrusUtil", Main.CheckForDeps_PapyrusUtil(false), OPTION_FLAG_DISABLED)
-
-    Return
+    self.AddToggleOption("$GW_MenuOpt_SKSE", Main.CheckForDeps_SKSE(false), OPTION_FLAG_DISABLED)
+    self.AddToggleOption("$GW_MenuOpt_SkyUI", Main.CheckForDeps_SkyUI(false), OPTION_FLAG_DISABLED)
+    self.AddToggleOption("$GW_MenuOpt_RaceMenu", Main.CheckForDeps_RaceMenu(false), OPTION_FLAG_DISABLED)
+    self.AddToggleOption("$GW_MenuOpt_PapyrusUtil", Main.CheckForDeps_PapyrusUtil(false), OPTION_FLAG_DISABLED)
 EndFunction

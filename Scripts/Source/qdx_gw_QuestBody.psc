@@ -31,34 +31,26 @@ String Function ActorSet(Actor Who)
     String Name = Who.GetDisplayName()
     Int FormID = Base.GetFormID()
     
-    ActorSet_Name(Path, Name)
-    ActorSet_FormID(Path, FormID)
+    self.ActorSet_Name(Path, Name)
+    self.ActorSet_FormID(Path, FormID)
 
     Return Path
 EndFunction
 
 Function ActorSet_Name(String Path, String Value)
     Main.Config.SetString(Path + KeyActorName, Value)
-
-    Return
 EndFunction
 
 Function ActorSet_FormID(String Path, Int Value)
     Main.Config.SetInt(Path + KeyActorFormID, Value)
-
-    Return
 EndFunction
 
 Function ActorSet_Glossiness(String Path, Float Value)
     Main.Config.SetFloat(Path + KeyActorGlossiness, Value)
-
-    Return
 EndFunction
 
 Function ActorSet_Specular(String Path, Float Value)
-    Main.Config.SetFloat(Path + KeyActorSpecular, Value)
-
-    Return
+	Main.Config.SetFloat(Path + KeyActorSpecular, Value)
 EndFunction
 
 Int Function ActorGet_FormID(String Path)
@@ -89,16 +81,16 @@ String Function ActorFind(Actor Who)
     ActorBase Base = Who.GetActorBase()
 
     Int FormID = Base.GetFormID()
-    Int Count = Main.Config.GetCount(KeyActors)
-    Int Index = Count
+    Int Count = Main.Config.GetCount(self.KeyActors)
 
-    String Path = KeyActors + "[" + Count + "]"
+    String Path = self.KeyActors + "[" + Count + "]"
 
+	Int Index = Count
     While (Index > 0)
         Index -= 1
 
-        String TempPath = KeyActors + "[" + Index + "]"
-        String TempFormID = ActorGet_FormID(TempPath)
+        String TempPath = self.KeyActors + "[" + Index + "]"
+        String TempFormID = self.ActorGet_FormID(TempPath)
 
         If (FormID == TempFormID)
             Index = 0
@@ -110,10 +102,14 @@ String Function ActorFind(Actor Who)
     Return Path
 EndFunction
 
+; Is the actor eligible to update
 Bool Function CanUpdate(Actor Who, Bool Female)
-    {is the actor eligible to update}
+    
+	If (!Who.Is3DLoaded())
+		Return False
+	EndIf
 
-    If !Who.HasKeyword(ActorTypeNPC)
+    If (!Who.HasKeyword(self.ActorTypeNPC))
         Return False
     EndIf
 
@@ -132,7 +128,7 @@ Bool Function CanUpdate(Actor Who, Bool Female)
 
     Bool ApplyBeast = Main.Config.GetBool(".ApplyBeast")
 
-    If (!ApplyBeast && Who.HasKeyword(IsBeastRace))
+    If (!ApplyBeast && Who.HasKeyword(self.IsBeastRace))
         Return False
     EndIf
 
@@ -143,96 +139,77 @@ EndFunction
 ;                      Visual                       
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+; Get the actor's head part name
 String Function GetHead(Actor Who)
-    {get the head part name}
-
     ActorBase Base = Who.GetActorBase()
 
     Int Index = Base.GetIndexOfHeadPartByType(1)
     HeadPart Part = Base.GetNthHeadPart(Index)
-    ;String Name = Part.GetName()
-
-    ; AddNodeOverride seems to expect an EditorID instead of a Name.
-    ; Currently no way to get that, so we have to devise one using
-	; the HDPT object itself and casting that to a string
-	; Latest RaceMenu now has HDPT.GetFullName
-
-    ; TEMPORARY!: Hacky solution to getting the EditorID
-    String Object = Part
-    Int First = StringUtil.Find(Object, "<")
-    Int Last = StringUtil.Find(Object, "(") - 2
-    Int Len = Last - First
-
-    String Name = StringUtil.Substring(Object, First + 1, Len)
-    ; END TEMPORARY!
+    String Name = Part.GetPartName()
 
     Return Name
 EndFunction
 
+; Update the actor's visuals
 Function UpdateVisual(Actor Who, Bool Female)
-    {update actor visuals}
-
     String Head = self.GetHead(Who)
     String Path = self.ActorFind(Who)
     
     Float Glossiness = self.ActorGet_Glossiness(Path)
-    Float Specular = self.ActorGet_Specular(Path)
+	Float Specular = self.ActorGet_Specular(Path)
+	
+    Main.Util.PrintDebug("Update: " + Who.GetActorBase().GetName())
 
+    ; Slots - https://www.creationkit.com/index.php?title=Slot_Masks_-_Armor
 
-    ; slots
-    ; https://www.creationkit.com/index.php?title=Slot_Masks_-_Armor
-
-    ; head
+    ; Head
     If Main.Config.GetBool(".VisualGlossinessHead")
-        AddVisual_Float(Who, Female, 2, Glossiness, Node = Head)
+        self.AddVisual_Float(Who, Female, 2, Glossiness, Node = Head)
     EndIf
 
     If Main.Config.GetBool(".VisualSpecularHead")
-        AddVisual_Float(Who, Female, 3, Specular, Node = Head)
+        self.AddVisual_Float(Who, Female, 3, Specular, Node = Head)
     EndIf
     
-    ; body
+    ; Body
     If Main.Config.GetBool(".VisualGlossinessBody")
-        AddVisual_Float(Who, Female, 2, Glossiness, Slot = 0x4)
+        self.AddVisual_Float(Who, Female, 2, Glossiness, Slot = 0x4)
     EndIf
 
     If Main.Config.GetBool(".VisualSpecularBody")
-        AddVisual_Float(Who, Female, 3, Specular, Slot = 0x4)
+        self.AddVisual_Float(Who, Female, 3, Specular, Slot = 0x4)
     EndIf
 
-    ; hands
+    ; Hands
     If Main.Config.GetBool(".VisualGlossinessHands")
-        AddVisual_Float(Who, Female, 2, Glossiness, Slot = 0x8)
+        self.AddVisual_Float(Who, Female, 2, Glossiness, Slot = 0x8)
     EndIf
 
     If Main.Config.GetBool(".VisualSpecularHands")
-        AddVisual_Float(Who, Female, 3, Specular, Slot = 0x8)
+        self.AddVisual_Float(Who, Female, 3, Specular, Slot = 0x8)
     EndIf
 
-    ; feet
+    ; Feet
     If Main.Config.GetBool(".VisualGlossinessFeet")
-        AddVisual_Float(Who, Female, 2, Glossiness, Slot = 0x80)
+        self.AddVisual_Float(Who, Female, 2, Glossiness, Slot = 0x80)
     EndIf
 
     If Main.Config.GetBool(".VisualSpecularFeet")
-        AddVisual_Float(Who, Female, 3, Specular, Slot = 0x80)
+        self.AddVisual_Float(Who, Female, 3, Specular, Slot = 0x80)
     EndIf
 
-    ; other
+    ; Other
     If Main.Config.GetBool(".VisualGlossinessOther")
-        AddVisual_Float(Who, Female, 2, Glossiness, Slot = 0x400000)
+        self.AddVisual_Float(Who, Female, 2, Glossiness, Slot = 0x400000)
     EndIf
 
     If Main.Config.GetBool(".VisualSpecularOther")
-        AddVisual_Float(Who, Female, 3, Specular, Slot = 0x400000)
+        self.AddVisual_Float(Who, Female, 3, Specular, Slot = 0x400000)
     EndIf
-
-    Return
 EndFunction
 
+; Add slot/node overrides
 Function AddVisual_Float(Actor Who, Bool Female, Int NifKey, Float Value, Int Slot = 0, String Node = "")
-    {update slot/node overrides}
-
     Float Current
 
     If Slot
@@ -253,36 +230,30 @@ Function AddVisual_Float(Actor Who, Bool Female, Int NifKey, Float Value, Int Sl
             NiOverride.AddNodeOverrideFloat(Who, Female, Node, NifKey, -1, Value, False)
         EndIf
     EndIf
-
-    Return
 EndFunction
 
+; Reset the actor's visuals
 Function RemoveVisual(Actor Who, Bool Female)
-    {reset actor visuals}
-
     String Head = self.GetHead(Who)
 
-    RemoveVisual_Override(Who, Female, 2, Node = Head)
-    RemoveVisual_Override(Who, Female, 3, Node = Head)
+    self.RemoveVisual_Override(Who, Female, 2, Node = Head)
+    self.RemoveVisual_Override(Who, Female, 3, Node = Head)
 
-    RemoveVisual_Override(Who, Female, 2, Slot = 0x4)
-    RemoveVisual_Override(Who, Female, 3, Slot = 0x4)
+    self.RemoveVisual_Override(Who, Female, 2, Slot = 0x4)
+    self.RemoveVisual_Override(Who, Female, 3, Slot = 0x4)
 
-    RemoveVisual_Override(Who, Female, 2, Slot = 0x8)
-    RemoveVisual_Override(Who, Female, 3, Slot = 0x8)
+    self.RemoveVisual_Override(Who, Female, 2, Slot = 0x8)
+    self.RemoveVisual_Override(Who, Female, 3, Slot = 0x8)
 
-    RemoveVisual_Override(Who, Female, 2, Slot = 0x80)
-    RemoveVisual_Override(Who, Female, 3, Slot = 0x80)
+    self.RemoveVisual_Override(Who, Female, 2, Slot = 0x80)
+    self.RemoveVisual_Override(Who, Female, 3, Slot = 0x80)
 
-    RemoveVisual_Override(Who, Female, 2, Slot = 0x400000)
-    RemoveVisual_Override(Who, Female, 3, Slot = 0x400000)
-
-    Return
+    self.RemoveVisual_Override(Who, Female, 2, Slot = 0x400000)
+    self.RemoveVisual_Override(Who, Female, 3, Slot = 0x400000)
 EndFunction
 
+; Remove slot/node overrides
 Function RemoveVisual_Override(Actor Who, Bool Female, Int NifKey, Int Slot = 0, String Node = "")
-    {remove slot/node overrides}
-
     If Slot
         NiOverride.RemoveSkinOverride(Who, Female, False, Slot, NifKey, -1)
         If (Who == Main.Player)
@@ -290,7 +261,5 @@ Function RemoveVisual_Override(Actor Who, Bool Female, Int NifKey, Int Slot = 0,
         EndIf
     Else
         NiOverride.RemoveNodeOverride(Who, Female, Node, NifKey, -1)
-    EndIf
-
-    Return
+	EndIf
 EndFunction

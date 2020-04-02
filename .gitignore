@@ -1,2 +1,4 @@
 meta.ini
 .vscode
+*.ppj
+*.bat
