@@ -16,3 +16,5 @@ Do *not* modify Default.json
 * [SKSE64](https://skse.silverlock.org/)
 
 * [SkyUI SE](https://www.nexusmods.com/skyrimspecialedition/mods/12604)
+
+* [Address Library](https://www.nexusmods.com/skyrimspecialedition/mods/32444)
