@@ -1,4 +1,6 @@
-meta.ini
-.vscode
+/meta.ini
+/.vscode
+/SKSE
 *.ppj
 *.bat
+*.zip
