@@ -102,16 +102,15 @@ Function InitActorData()
 
 	If (ActorList.Length > 0)
 		ActorNameList = qdx_gw.GetActorNameList()
+	EndIf
+
+	If (!ActorTarget)
 		ActorTarget = ActorList[0]
-	Else
-		ActorNameList = None
 	EndIf
 
 	If (ActorTarget)
 		qdx_gw.UpdateActor(ActorTarget)
 		ActorTargetSettings = qdx_gw.GetActorFloatSettings(ActorTarget)
-	Else
-		ActorTargetSettings = None
 	EndIf
 EndFunction
 
