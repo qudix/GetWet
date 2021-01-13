@@ -1,8 +1,9 @@
 ScriptName qdx_gw Hidden
 
-Function Update(Bool a_running) Global Native
-
 ; Actor
+
+Function Update() Global Native
+Function UpdateActor(Actor a_actor) Global Native
 
 Actor[] Function GetActorList() Global Native
 String[] Function GetActorNameList() Global Native

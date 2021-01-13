@@ -1,6 +1,4 @@
 {
-   "UpdateLoopFreq": 5.0,
-   "UpdateLoopRange": 5000.0,
    "VisualGlossinessMin": 30.0,
    "VisualGlossinessMax": 30.0,
    "VisualGlossinessHead": true,
@@ -15,6 +13,7 @@
    "VisualSpecularHands": true,
    "VisualSpecularFeet": true,
    "VisualSpecularOther": true,
+   "ApplyGlobal": false,
    "ApplyPlayer": true,
    "ApplyNPC": false,
    "ApplyMale": false,
