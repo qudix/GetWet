@@ -6,6 +6,16 @@ ScriptName qdx_gw_QuestConfig Extends Quest
 
 qdx_gw_QuestMain Property Main Auto
 
+Float Property ActivityStamina = 0.0 Auto Hidden
+Float Property ActivityMagicka = 0.0 Auto Hidden
+Float Property ActivitySprinting = 0.0 Auto Hidden
+Float Property ActivityRunning = 0.0 Auto Hidden
+Float Property ActivitySneaking = 0.0 Auto Hidden
+Float Property ActivityGalloping = 0.0 Auto Hidden
+Float Property ActivityWorking = 0.0 Auto Hidden
+
+Float Property VisualWetnessMax = 0.0 Auto Hidden
+Float Property VisualWetnessRateMax = 0.0 Auto Hidden
 Float Property VisualGlossinessMin = 0.0 Auto Hidden
 Float Property VisualGlossinessMax = 0.0 Auto Hidden
 Float Property VisualSpecularMin = 0.0 Auto Hidden
@@ -52,10 +62,12 @@ EndEvent
 
 Function GetConfig()
 	Float[] Floats = qdx_gw.GetFloatSettings()
-	VisualGlossinessMin = Floats[0]
-	VisualGlossinessMax = Floats[1]
-	VisualSpecularMin = Floats[2]
-	VisualSpecularMax = Floats[3]
+	VisualWetnessMax = Floats[0]
+	VisualWetnessRateMax = Floats[1]
+	VisualGlossinessMin = Floats[2]
+	VisualGlossinessMax = Floats[3]
+	VisualSpecularMin = Floats[4]
+	VisualSpecularMax = Floats[5]
 
 	Bool[] Bools = qdx_gw.GetBoolSettings()
 	ApplyGlobal = Bools[0]

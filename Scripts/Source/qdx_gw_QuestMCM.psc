@@ -24,6 +24,16 @@ Int B_ApplyFemale
 Int B_ApplyBeast
 Int B_UpdateAll
 
+Int S_ActivityStamina
+Int S_ActivityMagicka
+Int S_ActivitySprinting
+Int S_ActivityRunning
+Int S_ActivitySneaking
+Int S_ActivityGalloping
+Int S_ActivityWorking
+
+Int S_VisualWetnessMax
+Int S_VisualWetnessRateMax
 Int S_VisualGlossinessMin
 Int S_VisualGlossinessMax
 Int B_VisualGlossinessHead
@@ -57,8 +67,23 @@ Function ShowPageGeneral()
 	B_ApplyBeast = AddToggleOption("$GW_Toggle_TypeBeast", Config.ApplyBeast)
 	B_UpdateAll = AddTextOption("", "$GW_Toggle_UpdateAll")
 
+	AddEmptyOption()
+	AddHeaderOption("$GW_Header_Activity")
+	S_ActivityStamina = AddSliderOption("$GW_Slider_RangeMax", Config.ActivityStamina)
+	S_ActivityMagicka = AddSliderOption("$GW_Slider_RangeStep", Config.ActivityMagicka)
+	S_ActivitySprinting = AddSliderOption("$GW_Slider_RangeStep", Config.ActivitySprinting)
+	S_ActivityRunning = AddSliderOption("$GW_Slider_RangeStep", Config.ActivityRunning)
+	S_ActivitySneaking = AddSliderOption("$GW_Slider_RangeStep", Config.ActivitySneaking)
+	S_ActivityGalloping = AddSliderOption("$GW_Slider_RangeStep", Config.ActivityGalloping)
+	S_ActivityWorking = AddSliderOption("$GW_Slider_RangeStep", Config.ActivityWorking)
+
 	SetCursorPosition(1)
 
+	AddHeaderOption("$GW_Header_Wetness")
+	S_VisualWetnessMax = AddSliderOption("$GW_Slider_RangeMax", Config.VisualWetnessMax)
+	S_VisualWetnessRateMax = AddSliderOption("$GW_Slider_RangeMax", Config.VisualWetnessRateMax)
+
+	AddEmptyOption()
 	AddHeaderOption("$GW_Header_Glossiness")
 	S_VisualGlossinessMin = AddSliderOption("$GW_Slider_RangeMin", Config.VisualGlossinessMin, "{0}")
 	S_VisualGlossinessMax = AddSliderOption("$GW_Slider_RangeMax", Config.VisualGlossinessMax, "{0}")
@@ -85,6 +110,7 @@ EndFunction
 
 Int M_ActorList
 Int T_ActorSetCustom
+Int S_ActorWetnessMax
 Int S_ActorGlossinessMin
 Int S_ActorGlossinessMax
 Int S_ActorSpecularMin
@@ -176,7 +202,7 @@ Function ShowPageDebug()
 	AddToggleOption("$GW_Dependency_SkyUI", Main.CheckDep_SkyUI(False), OPTION_FLAG_DISABLED)
 
 	SetCursorPosition(1)
-	AddHeaderOption("$GW_Header_DebugStatus")
+	AddHeaderOption("$GW_Header_DebugOptions")
 	B_DebugActive = AddToggleOption("$GW_Toggle_DebugActive", Config.DebugMode)
 	AddEmptyOption()
 EndFunction
@@ -340,48 +366,98 @@ Event OnOptionSliderOpen(Int Item)
 	Float Val = 0.0
 	Float Min = 0.0
 	Float Max = 0.0
-	Float Interval = 0.0
 
-	If (Item == S_VisualGlossinessMin)
+	Float Interval = 0.0
+	Float WetnessStep = 0.2
+	Float WetnessRateStep = 0.1
+	Float GlossinessStep = 5.0
+	Float SpecularStep = 0.5
+
+	If (Item == S_VisualWetnessMax)
+		Val = Config.VisualWetnessMax
+		Min = 5.0
+		Max = 20.0
+		Interval = WetnessStep
+	ElseIf (Item == S_VisualWetnessRateMax)
+		Val = Config.VisualWetnessMax
+		Min = 5.0
+		Max = 10.0
+		Interval = WetnessRateStep
+	ElseIf (Item == S_ActivityStamina)
+		Val = Config.ActivityStamina
+		Min = 0.2
+		Max = 10.0
+		Interval = WetnessRateStep
+	ElseIf (Item == S_ActivityMagicka)
+		Val = Config.ActivityMagicka
+		Min = 0.2
+		Max = 10.0
+		Interval = WetnessRateStep
+	ElseIf (Item == S_ActivitySprinting)
+		Val = Config.ActivitySprinting
+		Min = 0.2
+		Max = 10.0
+		Interval = WetnessRateStep
+	ElseIf (Item == S_ActivityRunning)
+		Val = Config.ActivityRunning
+		Min = 0.2
+		Max = 10.0
+		Interval = WetnessRateStep
+	ElseIf (Item == S_ActivitySneaking)
+		Val = Config.ActivitySneaking
+		Min = 0.2
+		Max = 10.0
+		Interval = WetnessRateStep
+	ElseIf (Item == S_ActivityGalloping)
+		Val = Config.ActivityGalloping
+		Min = 0.2
+		Max = 10.0
+		Interval = WetnessRateStep
+	ElseIf (Item == S_ActivityWorking)
+		Val = Config.ActivityWorking
+		Min = 0.2
+		Max = 10.0
+		Interval = WetnessRateStep
+	ElseIf (Item == S_VisualGlossinessMin)
 		Val = Config.VisualGlossinessMin
 		Min = 5.0
 		Max = 1000.0
-		Interval = 5.0
+		Interval = GlossinessStep
 	ElseIf (Item == S_VisualGlossinessMax)
 		Val = Config.VisualGlossinessMax
 		Min = 5.0
 		Max = 1000.0
-		Interval = 5.0
+		Interval = GlossinessStep
 	ElseIf (Item == S_VisualSpecularMin)
 		Val = Config.VisualSpecularMin
 		Min = 0.5
 		Max = 100.0
-		Interval = 0.5
+		Interval = SpecularStep
 	ElseIf (Item == S_VisualSpecularMax)
 		Val = Config.VisualSpecularMax
 		Min = 0.5
 		Max = 100.0
-		Interval = 0.5
+		Interval = SpecularStep
 	ElseIf (Item == S_ActorGlossinessMin)
 		Val = ActorTargetSettings[0]
 		Min = 5.0
 		Max = 1000.0
-		Interval = 5.0
+		Interval = GlossinessStep
 	ElseIf (Item == S_ActorGlossinessMax)
 		Val = ActorTargetSettings[1]
 		Min = 5.0
 		Max = 1000.0
-		Interval = 5.0
+		Interval = GlossinessStep
 	ElseIf (Item == S_ActorSpecularMin)
 		Val = ActorTargetSettings[2]
 		Min = 0.5
 		Max = 100.0
-		Interval = 0.5
+		Interval = SpecularStep
 	ElseIf (Item == S_ActorSpecularMax)
 		Val = ActorTargetSettings[3]
 		Min = 0.5
 		Max = 100.0
-		Interval = 0.5
+		Interval = SpecularStep
 	EndIf
 
 	SetSliderDialogStartValue(Val)
@@ -391,36 +467,57 @@ EndEvent
 
 Event OnOptionSliderAccept(Int Item, Float Val)
 	SoundTickBig.Play(Main.Player)
-	String Fmt = "{0}"
+	String Fmt = "{1}"
 	String Setting = ""
 
-	If (Item == S_VisualGlossinessMin)
-		Fmt = "{1}"
+	If (Item == S_ActivityStamina)
+		Config.ActivityStamina = Val
+		Setting = "ActivityStamina"
+	ElseIf (Item == S_ActivityMagicka)
+		Config.ActivityMagicka = Val
+		Setting = "ActivityMagicka"
+	ElseIf (Item == S_ActivitySprinting)
+		Config.ActivitySprinting = Val
+		Setting = "ActivitySprinting"
+	ElseIf (Item == S_ActivityRunning)
+		Config.ActivityRunning = Val
+		Setting = "ActivityRunning"
+	ElseIf (Item == S_ActivitySneaking)
+		Config.ActivitySneaking = Val
+		Setting = "ActivitySneaking"
+	ElseIf (Item == S_ActivityGalloping)
+		Config.ActivityGalloping = Val
+		Setting = "ActivityGalloping"
+	ElseIf (Item == S_ActivityWorking)
+		Config.ActivityWorking = Val
+		Setting = "ActivityWorking"
+	ElseIf (Item == S_VisualWetnessMax)
+		Config.VisualWetnessMax = Val
+		Setting = "VisualWetnessMax"
+	ElseIf (Item == S_VisualWetnessRateMax)
+		Config.VisualWetnessRateMax = Val
+		Setting = "VisualWetnessMax"
+	ElseIf (Item == S_VisualGlossinessMin)
 		Config.VisualGlossinessMin = Val
 		Setting = "VisualGlossinessMin"
 	ElseIf (Item == S_VisualGlossinessMax)
-		Fmt = "{1}"
 		Config.VisualGlossinessMax = Val
 		Setting = "VisualGlossinessMax"
 	ElseIf (Item == S_VisualSpecularMin)
-		Fmt = "{1}"
 		Config.VisualSpecularMin = Val
 		Setting = "VisualSpecularMin"
 	ElseIf (Item == S_VisualSpecularMax)
-		Fmt = "{1}"
 		Config.VisualSpecularMax = Val
 		Setting = "VisualSpecularMax"
+	ElseIf (Item == S_ActorWetnessMax)
+		qdx_gw.SetActorFloatSetting(ActorTarget, "VisualWetnessMax", Val)
 	ElseIf (Item == S_ActorGlossinessMin)
-		Fmt = "{1}"
 		qdx_gw.SetActorFloatSetting(ActorTarget, "VisualGlossinessMin", Val)
 	ElseIf (Item == S_ActorGlossinessMax)
-		Fmt = "{1}"
 		qdx_gw.SetActorFloatSetting(ActorTarget, "VisualGlossinessMax", Val)
 	ElseIf (Item == S_ActorSpecularMin)
-		Fmt = "{1}"
 		qdx_gw.SetActorFloatSetting(ActorTarget, "VisualSpecularMin", Val)
 	ElseIf (Item == S_ActorSpecularMax)
-		Fmt = "{1}"
 		qdx_gw.SetActorFloatSetting(ActorTarget, "VisualSpecularMax", Val)
 	EndIf
 
@@ -454,24 +551,28 @@ Event OnOptionMenuAccept(Int Item, Int Selected)
 	EndIf
 EndEvent
 
+Bool Function Equals(Int Value, Int First, Int Second, Int Third = -1)
+	Return (Value == First) || (Value == Second) || (Value == Third)
+EndFunction
+
 Event OnOptionHighlight(Int Item)
 	String Text = ""
 
 	If (Item == B_ModActive)
 		Text = "$GW_Tip_ModActive"
-	ElseIf ((Item == S_VisualGlossinessMin) || (Item == S_VisualSpecularMin))
+	ElseIf Equals(Item, S_VisualGlossinessMin, S_VisualSpecularMin)
 		Text = "$GW_Tip_PartMin"
-	ElseIf ((Item == S_VisualGlossinessMax) || (Item == S_VisualSpecularMax))
+	ElseIf Equals(Item, S_VisualWetnessMax, S_VisualGlossinessMax, S_VisualSpecularMax)
 		Text = "$GW_Tip_PartMax"
-	ElseIf ((Item == B_VisualGlossinessHead) || (Item == B_VisualSpecularHead))
+	ElseIf Equals(Item, B_VisualGlossinessHead, B_VisualSpecularHead)
 		Text = "$GW_Tip_PartHead"
-	ElseIf ((Item == B_VisualGlossinessBody) || (Item == B_VisualSpecularBody))
+	ElseIf Equals(Item, B_VisualGlossinessBody, B_VisualSpecularBody)
 		Text = "$GW_Tip_PartBody"
-	ElseIf ((Item == B_VisualGlossinessHands) || (Item == B_VisualSpecularHands))
+	ElseIf Equals(Item, B_VisualGlossinessHands, B_VisualSpecularHands)
 		Text = "$GW_Tip_PartHands"
-	ElseIf ((Item == B_VisualGlossinessFeet) || (Item == B_VisualSpecularFeet))
+	ElseIf Equals(Item, B_VisualGlossinessFeet, B_VisualSpecularFeet)
 		Text = "$GW_Tip_PartFeet"
-	ElseIf ((Item == B_VisualGlossinessOther) || (Item == B_VisualSpecularOther))
+	ElseIf Equals(Item, B_VisualGlossinessOther, B_VisualSpecularOther)
 		Text = "$GW_Tip_PartOther"
 	ElseIf (Item == B_ApplyGlobal)
 		Text = "$GW_Tip_TypeGlobal"

@@ -1,4 +1,13 @@
 {
+   "ActivityStamina": 1.5,
+   "ActivityMagicka": 2.0,
+   "ActivitySprinting": 1.0,
+   "ActivityRunning": 0.5,
+   "ActivitySneaking": 0.3,
+   "ActivityGalloping": 0.3,
+   "ActivityWorking": 0.0,
+   "VisualWetnessMax": 20.0,
+   "VisualWetnessRateMax": 10.0,
    "VisualGlossinessMin": 30.0,
    "VisualGlossinessMax": 30.0,
    "VisualGlossinessHead": true,
