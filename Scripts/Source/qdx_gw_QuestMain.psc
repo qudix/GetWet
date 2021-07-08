@@ -30,8 +30,11 @@ EndFunction
 
 ; Do stuff
 Event OnInit()
+	; Reset the config quest
+	ResetConfig()
+
 	If (Self.IsStopped())
-		PrintDebug("Startup Aborted: Main is stopped.")
+		PrintDebug("Startup Aborted: Main Quest is stopped.")
 		Return
 	EndIf
 
@@ -41,21 +44,6 @@ Event OnInit()
 		Self.Stop()
 		Return
 	EndIf
-
-	; Start the config menu
-	ResetConfig()
-
-	Int Wait = 0
-	While (!Config.IsRunning() && Wait < 10)
-		Wait += 1
-		PrintDebug("Waiting for Config to start (" + Wait + ")...")
-		Utility.Wait(1.0)
-	EndWhile
-
-	If (!Config.IsRunning())
-		PrintDebug("Startup Aborted: Config did not reset.")
-		Return
-	EndIf
 EndEvent
 
 ; Reset the config menu library
@@ -63,6 +51,7 @@ Function ResetConfig()
 	Config.Reset()
 	Config.Stop()
 	Config.Start()
+	qdx_gw.GetConfig()
 EndFunction
 
 ; Reset the entire mod
@@ -119,14 +108,14 @@ EndFunction
 
 ; Print text
 Function Print(String Msg)
-	Debug.Notification("[GW] " + Msg)
+	Debug.Notification("GW: " + Msg)
 EndFunction
 
 ; Print debug text
 Function PrintDebug(String Msg)
-	If (Config.DebugMode)
-		qdx_gw.PrintConsole("[GW] " + Msg)
-		Debug.Trace("[GW] " + Msg)
+	If (Config.MiscDebug)
+		qdx_gw.PrintConsole("GW: " + Msg)
+		Debug.Trace("GW: " + Msg)
 	EndIf
 EndFunction
 
@@ -135,6 +124,5 @@ Function PopupError(String Msg)
 	String Output = ""
 	Output += "Get Wet Error:\n"
 	Output += Msg
-
 	Debug.MessageBox(Output)
 EndFunction
