@@ -30,11 +30,10 @@ EndFunction
 
 ; Do stuff
 Event OnInit()
-	; Reset the config quest
-	ResetConfig()
+	qdx_gw.GetConfig()
 
 	If (Self.IsStopped())
-		PrintDebug("Startup Aborted: Main Quest is stopped.")
+		PrintDebug("Startup Aborted - Main Quest is stopped.")
 		Return
 	EndIf
 
@@ -45,21 +44,6 @@ Event OnInit()
 		Return
 	EndIf
 EndEvent
-
-; Reset the config menu library
-Function ResetConfig()
-	Config.Reset()
-	Config.Stop()
-	Config.Start()
-	qdx_gw.GetConfig()
-EndFunction
-
-; Reset the entire mod
-Function ResetMod()
-	Self.Reset()
-	Self.Stop()
-	Self.Start()
-EndFunction
 
 ; Make sure we have everything
 Bool Function CheckDep(Bool Popup)

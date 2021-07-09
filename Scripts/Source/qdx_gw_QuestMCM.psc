@@ -239,6 +239,12 @@ EndFunction
 ;                      Main
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Function ResetTarget()
+	ActorTarget = None
+	ActorTargetIndex = 0
+	ActorTargetPreset = False
+EndFunction
+
 Event OnGameReload()
 	Parent.OnGameReload()
 	qdx_gw.GetConfig()
@@ -250,9 +256,7 @@ Event OnConfigInit()
 	Self.Pages[1] = "$GW_Page_Actor"
 	Self.Pages[2] = "$GW_Page_Misc"
 
-	ActorTarget = None
-	ActorTargetIndex = 0
-	ActorTargetPreset = False
+	ResetTarget()
 EndEvent
 
 Event OnConfigOpen()
@@ -268,14 +272,15 @@ Event OnPageReset(String Page)
 		SoundDing.Play(Main.Player)
 	EndIf
 
-	UnloadCustomContent()
 	qdx_gw.GetConfig()
+	UnloadCustomContent()
 
 	If (Page == "$GW_Page_General")
 		SoundTickBig.Play(Main.Player)
 		ShowPageGeneral()
 	ElseIf (Page == "$GW_Page_Actor")
 		SoundTickBig.Play(Main.Player)
+		ResetTarget()
 		ShowPageActor()
 	ElseIf (Page == "$GW_Page_Misc")
 		SoundTickBig.Play(Main.Player)
@@ -364,10 +369,10 @@ Event OnOptionSelect(Int Item)
 	ElseIf (Item == T_ActorSetPreset)
 		If (ActorTarget && ActorTargetPreset)
 			qdx_gw.RemoveActorPreset(ActorTarget)
-			Main.PrintDebug("Remove")
+			Main.PrintDebug("Remove Preset")
 		Else
 			qdx_gw.AddActorPreset(ActorTarget)
-			Main.PrintDebug("Add")
+			Main.PrintDebug("Add Preset")
 		EndIf
 
 		ForcePageReset()
